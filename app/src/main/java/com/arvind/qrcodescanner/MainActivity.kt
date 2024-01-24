@@ -6,8 +6,10 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -65,8 +67,10 @@ class MainActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 initQRCodeScanner()
             } else {
-                Toast.makeText(this, "Camera permission is required", Toast.LENGTH_LONG).show();
-                finish();
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri: Uri = Uri.fromParts("package", packageName, null)
+                intent.data = uri
+                startActivityForResult(intent, PERMISSION_REQUEST_CAMERA)
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
